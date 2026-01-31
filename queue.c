@@ -78,8 +78,8 @@ int q_size(struct list_head *head)
     if (!head)
         return 0;
     int len = 0;
-    struct list_head *node;
-    list_for_each(node, head)
+    element_t *entry;
+    list_for_each_entry(entry, head, list)
         len++;
     return len;
 }
