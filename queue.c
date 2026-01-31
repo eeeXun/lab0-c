@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "list.h"
 
@@ -9,6 +7,8 @@
 struct list_head *q_new()
 {
     struct list_head *head = malloc(sizeof(struct list_head));
+    if (!head)
+        return NULL;
     INIT_LIST_HEAD(head);
     return head;
 }
@@ -16,6 +16,8 @@ struct list_head *q_new()
 /* Free all storage used by queue */
 void q_free(struct list_head *head)
 {
+    if (!head)
+        return;
     element_t *entry, *safe;
     list_for_each_entry_safe(entry, safe, head, list)
         q_release_element(entry);
@@ -28,7 +30,13 @@ bool q_insert_head(struct list_head *head, char *s)
     if (!head)
         return false;
     element_t *node = malloc(sizeof(element_t));
+    if (!node)
+        return false;
     node->value = strdup(s);
+    if (!node->value) {
+        free(node);
+        return false;
+    }
     list_add(&node->list, head);
     return true;
 }
@@ -39,7 +47,13 @@ bool q_insert_tail(struct list_head *head, char *s)
     if (!head)
         return false;
     element_t *node = malloc(sizeof(element_t));
+    if (!node)
+        return false;
     node->value = strdup(s);
+    if (!node->value) {
+        free(node);
+        return false;
+    }
     list_add_tail(&node->list, head);
     return true;
 }
