@@ -83,7 +83,7 @@ element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
         sp[bufsize - 1] = '\0';
     }
     list_del(&node->list);
-    return NULL;
+    return node;
 }
 
 /* Return number of elements in queue */
