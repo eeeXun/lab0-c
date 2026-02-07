@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include <string.h>
 #include "list.h"
 
@@ -174,8 +173,42 @@ void q_reverseK(struct list_head *head, int k)
     }
 }
 
+void q_merge_two(struct list_head *head,
+                 struct list_head *new_head,
+                 bool descend)
+{
+    if (!head || !new_head || list_empty(new_head))
+        return;
+    if (list_empty(head)) {
+        list_splice(new_head, head);
+        return;
+    }
+    element_t *node = list_first_entry(head, element_t, list),
+              *new_node = list_first_entry(new_head, element_t, list);
+    while ((&node->list != head) && (&new_node->list != new_head)) {
+        int cmp = strcmp(node->value, new_node->value);
+        if ((!descend && cmp < 0) || (descend && cmp > 0)) {
+            node = list_entry(node->list.next, element_t, list);
+        } else {
+            list_move_tail(&new_node->list, &node->list);
+            new_node = list_first_entry(new_head, element_t, list);
+        }
+    }
+    list_splice_tail(new_head, head);
+}
+
 /* Sort elements of queue in ascending/descending order */
-void q_sort(struct list_head *head, bool descend) {}
+void q_sort(struct list_head *head, bool descend)
+{
+    if (!head || list_empty(head) || list_is_singular(head))
+        return;
+    LIST_HEAD(new_head);
+    struct list_head *mid = q_mid(head);
+    list_cut_position(&new_head, head, mid->prev);
+    q_sort(head, descend);
+    q_sort(&new_head, descend);
+    q_merge_two(head, &new_head, descend);
+}
 
 /* Remove every node which has a node with a strictly less value anywhere to
  * the right side of it */
