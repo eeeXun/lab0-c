@@ -104,7 +104,7 @@ bool q_delete_mid(struct list_head *head)
 {
     if (!head || list_empty(head))
         return false;
-    struct list_head *first = &list_first_entry(head, element_t, list)->list;
+    struct list_head *first = head->next;
     struct list_head *slow = first, *fast = first;
     while (fast->next != head && fast->next != first) {
         slow = slow->next;
@@ -127,7 +127,7 @@ void q_swap(struct list_head *head)
 {
     if (!head || list_empty(head) || list_is_singular(head))
         return;
-    struct list_head *node = &list_first_entry(head, element_t, list)->list;
+    struct list_head *node = head->next;
     while (node != head && node->next != head) {
         list_del(node);
         list_add(node, node->next);
