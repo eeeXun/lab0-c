@@ -129,8 +129,7 @@ void q_swap(struct list_head *head)
         return;
     struct list_head *node = head->next;
     while (node != head && node->next != head) {
-        list_del(node);
-        list_add(node, node->next);
+        list_move(node, node->next);
         node = node->next;
     }
 }
