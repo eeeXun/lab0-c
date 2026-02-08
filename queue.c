@@ -216,22 +216,21 @@ int q_ascend(struct list_head *head)
 {
     if (!head || list_empty(head))
         return 0;
-    struct list_head *stack = q_new();
+    LIST_HEAD(stack);
     element_t *entry, *safe;
     list_for_each_entry_safe(entry, safe, head, list) {
-        while (!list_empty(stack) &&
-               strcmp(list_last_entry(stack, element_t, list)->value,
+        while (!list_empty(&stack) &&
+               strcmp(list_last_entry(&stack, element_t, list)->value,
                       entry->value) >= 0) {
-            element_t *top = list_last_entry(stack, element_t, list);
+            element_t *top = list_last_entry(&stack, element_t, list);
             list_del(&top->list);
             q_release_element(top);
         }
         list_del(&entry->list);
-        list_add_tail(&entry->list, stack);
+        list_add_tail(&entry->list, &stack);
     }
-    list_add(head, stack);
-    list_del(stack);
-    free(stack);
+    list_add(head, &stack);
+    list_del(&stack);
     return q_size(head);
 }
 
@@ -241,22 +240,21 @@ int q_descend(struct list_head *head)
 {
     if (!head || list_empty(head))
         return 0;
-    struct list_head *stack = q_new();
+    LIST_HEAD(stack);
     element_t *entry, *safe;
     list_for_each_entry_safe(entry, safe, head, list) {
-        while (!list_empty(stack) &&
-               strcmp(list_last_entry(stack, element_t, list)->value,
+        while (!list_empty(&stack) &&
+               strcmp(list_last_entry(&stack, element_t, list)->value,
                       entry->value) <= 0) {
-            element_t *top = list_last_entry(stack, element_t, list);
+            element_t *top = list_last_entry(&stack, element_t, list);
             list_del(&top->list);
             q_release_element(top);
         }
         list_del(&entry->list);
-        list_add_tail(&entry->list, stack);
+        list_add_tail(&entry->list, &stack);
     }
-    list_add(head, stack);
-    list_del(stack);
-    free(stack);
+    list_add(head, &stack);
+    list_del(&stack);
     return q_size(head);
 }
 
