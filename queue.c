@@ -278,9 +278,9 @@ int q_merge(struct list_head *head, bool descend)
 {
     if (!head || list_empty(head))
         return 0;
-    queue_contex_t *entry, *safe,
+    queue_contex_t *entry,
         *first_chain = list_first_entry(head, queue_contex_t, chain);
-    list_for_each_entry_safe(entry, safe, head, chain) {
+    list_for_each_entry(entry, head, chain) {
         if (entry == first_chain)
             continue;
         q_merge_two(first_chain->q, entry->q, descend);
